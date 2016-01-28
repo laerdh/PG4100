@@ -27,7 +27,7 @@ public class CarRentalApplication {
     }
 
     public static void startThreadPool(int start, int end) {
-        ExecutorService executor = Executors.newFixedThreadPool(CUSTOMERS / 2);
+        ExecutorService executor = Executors.newFixedThreadPool(end - start);
         for (int i = start; i < end; i++) {
             Customer customer = new Customer(names.get(i));
             customer.setCarRental(carRental);
