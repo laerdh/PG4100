@@ -25,14 +25,14 @@ public class Car {
         return available;
     }
 
-    public boolean equals(Object o) {
-        if (!(o instanceof Car))
+    public boolean equals(Object other) {
+        if (!(other instanceof Car))
             return false;
 
-        if (this == o) {
+        if (this == other) {
             return true;
         }
-        Car other = (Car) o;
-        return this.regNumber.equals(other.getRegNumber());
+        Car otherCar = (Car) other;
+        return this.regNumber.equals(otherCar.getRegNumber());
     }
 }
