@@ -1,0 +1,69 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf340
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww19860\viewh13520\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs48 \cf0 Innlevering 1 - Notat\
+
+\fs28 Navn: 
+\b0 Lars Erling Westbye Dahl
+\b\fs48 \
+
+\fs28 Dato: 
+\b0 31.01.2016\
+\
+Forutsetninger for \'e5 kunne teste l\'f8sningen: 
+\b Ingen\
+\
+
+\b0 Kommentarer til eget resultat:\
+- Kunne benyttet en CountDownLatch til \'e5 vente med \'e5 starte tr\'e5dene etter at 5 kunde-tr\'e5der er opprettet.\
+- Kunne lagt mer tilrette for testing, selv om jeg fors\'f8kte \'e5 f\'f8lge TDD-prinsippene. Synes testing var en stor utfordring i denne oppgaven, s\'e5 dette er noe jeg m\'e5 jobbere videre med.\
+- Lite optimal bruk av HashMap\'92et 
+\i reservations
+\i0  i metoden getCustomerByCar(), der jeg m\'e5 finne 
+\i key by value
+\i0 . Dette er kun for \'e5 f\'e5 skrevet ut navnet p\'e5 vedkommende de forskjellige bilene er utleid til. Kom ikke p\'e5 andre og bedre l\'f8sninger.\
+\
+Sp\'f8rsm\'e5l:\
+- \'d8nsker litt input i forhold til testing og testing av tr\'e5der. Det var dette jeg slet med under l\'f8sing av oppgaven.\
+\
+\
+
+\b\fs36 Beskrivelse av l\'f8sning\
+
+\b0\fs28 \ul CarRentalApplication\ulnone \
+Her ligger main-metoden. \
+Antall kunder er bestemt av en konstant, 
+\i CUSTOMERS
+\i0 . Det hentes i dette tilfellet inn 10 kundenavn fra bruker hvor disse blir lagt i en ArrayList. N\'e5r halvparten(5) kundenavn er lagt inn kalles det p\'e5 metoden startThreadPool() med 0 og antall kunder delt p\'e5 to (5) som parametere. Det opprettes da en ExecutorService med en fixed thread pool med plass til 5 kundertr\'e5der. En for l\'f8kke oppretter kunde-objektene og tr\'e5der utifra listen med navn, og i tillegg settes det hvilken bilutleietjeneste kundene skal benytte.\
+\
+\
+\ul CarRental\
+\ulnone Implementerer interfacet CarRentalService med metodene rentACar() og returnACar() for \'e5 gj\'f8re l\'f8sningen skalerbar.\
+Klassen har konstanter for hva slags registreringsprefix bilene skal ha, i dette tilfellet \'abRF\'bb, og antall biler - DEFAULT_CAR_POOL = 5.\
+Metoden init() oppretter bil-objektene og legger dem i en ArrayList. Denne skriver ogs\'e5 ut status for utleiebilene n\'e5r den er fullf\'f8rt.\
+\
+Metoden rentACar() kalles p\'e5 av kunde-tr\'e5dene. Denne har en lock, slik at ikke flere kunder pr\'f8ver \'e5 leie samme bil samtidig (race condition). N\'e5r kunde-tr\'e5den kommer seg inn i metoden kalles det p\'e5 await() dersom det ikke er biler tilgjengelig. Tr\'e5den blir da st\'e5ende og vente til en bil blir returnert. Deretter kalles det p\'e5 findAvailableCar() som returnerer et bil-objekt. N\'e5r kunden f\'e5r tildelt en bil legges det inn i en HashMap 
+\i reservations
+\i0 , hvor kunde er n\'f8kkel og bil er verdi. Deretter skrives det ut status for utleiebilene og det returneres true. Dersom det er ingen bil tilgjengelig vil metoden skrive ut status om at kunde har fors\'f8kt \'e5 leie bil, men det var ingen tilgjengelig. Metodens returtype brukes hovedsakelig til testing. I finally-blokken blir status for utleiebilene skrevet ut igjen og l\'e5sen blir l\'e5st opp.\
+\
+Metoden returnACar() kalles ogs\'e5 p\'e5 av kunde-tr\'e5dene. Denne har ogs\'e5 en lock, slik som rentACar() for \'e5 unng\'e5 race conditions. Deretter brukes kunde-objektet til \'e5 hente ut bilen vedkommende har leid i 
+\i reservations
+\i0  og sette status p\'e5 den til tilgjengelig. Reservasjonen, eller bindingen mellom kunde- og bilobjektet blir slettet fra 
+\i reservations 
+\i0 og det blir skrevet ut at kunden har returnert bilen. N\'e5r en bil er gjort tilgjengelig signaliseres det til ventende tr\'e5der. I Finally-blokken blir det skrevet ut status for utleiebilene og l\'e5sen blir l\'e5st opp.\
+\
+\ul Customer\
+\ulnone Selve kunde-objektet. Har navn, CarRentalService og tids-variabler og konstanter i attributt-feltet. Customer implementerer Runnable, slik at objekter av denne typen kan kj\'f8res som egen tr\'e5d.\
+I run()-metoden starter en evig while-l\'f8kke som kaller p\'e5 metodene rentACar() med et vilk\'e5rlig intervall. Default-verdi er 1-10 sekunder. Dersom en annen kunde-tr\'e5d har l\'e5st rentACar()-metoden vil gjeldende kunde-tr\'e5d m\'e5tte vente p\'e5 at metoden blir l\'e5st opp.\
+Dersom rentACar() returnerer 
+\i true
+\i0  vil tr\'e5den sove mellom 1-3 sekunder (default) f\'f8r den kaller p\'e5 returnACar(). Hvis det returneres 
+\i false
+\i0 , vil tr\'e5den pr\'f8ve \'e5 leie bil igjen etter 1-10 sekunder. \
+Tids-intervallene kan settes av metodene setSleepTimeHire() og setSleepTimeReturn().\
+\
+\ul Car\
+\ulnone Bil-objektet. Har variabler for registreringsnummer og tilgjengelighet i attributt-feltet samt settere og gettere for disse.}

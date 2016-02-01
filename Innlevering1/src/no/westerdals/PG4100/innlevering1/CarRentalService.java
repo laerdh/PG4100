@@ -1,7 +1,7 @@
 package no.westerdals.PG4100.innlevering1;
 
 
-interface ICarRental {
+interface CarRentalService {
     boolean rentACar(Customer customer);
 
     void returnACar(Customer customer);
