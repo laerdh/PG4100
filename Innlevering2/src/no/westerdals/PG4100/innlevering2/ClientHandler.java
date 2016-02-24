@@ -47,22 +47,23 @@ public class ClientHandler implements Runnable {
             if (!message.equalsIgnoreCase("nei")) {
                 do {
                     if (clientAnswer) {
-                        String response = checkAnswer(message) ? "Riktig!" : "Feil!";
+                        String response = checkAnswer(message) ? "Riktig!" : "Feil! Riktig svar er: "
+                                + current.getAuthor();
                         send(response + "\nVil du fortsette? (j/n)");
                         clientAnswer = false;
                     } else {
                         send(getRandomQuestion());
                     }
                     message = read();
-                    if (message.equalsIgnoreCase("ja")) {
+                    if (message.equalsIgnoreCase("j")) {
                         continue;
                     }
                     clientAnswer = true;
-                } while (!message.equalsIgnoreCase("nei"));
+                } while (!message.equalsIgnoreCase("n"));
                 send("Takk for at du deltok!");
             }
         } catch (IOException e) {
-            System.out.println("-> CLIENT DISCONNECTED");
+            System.out.println("Error: " + e.getMessage());
         } finally {
             disconnect();
         }
@@ -87,6 +88,7 @@ public class ClientHandler implements Runnable {
 
     public void disconnect() {
         try {
+            System.out.println("-> CLIENT DISCONNECTED");
             client.close();
             input.close();
             output.close();
