@@ -1,0 +1,129 @@
+            ------
+            Innlevering 3 - PrimeChecker
+            ------
+            Lars Dahl
+            ------
+             2016-04-14
+
+
+Innlevering 3 - PrimeChecker
+
+* Description
+
+  Innlevering 3 PrimeChecker is a webapplication for checking whether a number is a primenumber or not.
+  Users can access a HTML-page and enter the number they want to check into a text-field. The application returns the result immediately when user press the "Go!" button.
+
+  This project is a 'hand-in' in the following course:
+
+  <<PG4100>> - Avansert Javaprogrammering 2
+
+
+** Implementation Details
+
+  This application is built using Maven, Java Servlets and JavaServer Pages.
+
+  \
+  <<index.jsp>>
+
+  Provides the user interface. A simple HTML-page with an input text-field and a submit button. This page redirects the request to the PrimeCheckerServlet, but also prints out the result.
+
+  \
+  <<PrimeCheckServlet.java>>
+
+  This servlet handles the request from the user. User sends a parameter (number) to the servlet from a HTML-Form within <index.jsp>.
+
+  PrimeCheckServlet uses two methods <checkPrime()> and <getResult()> to create a response to the user.
+
+    * <checkPrime()> uses the <Primes>-class found in the <commons-math3>-library from <org.apache.commons> to determine if the number is a prime.
+
+    * <getResult()> returns a textual representation (String) of the result
+
+  PrimeCheckServlet sets the result in an attribute before it redirects the user back to <index.jsp>, which displays the result to the user.
+
+
+** Extra Maven plugins
+
+  <<Cobertura plugin>>
+
+  After doing a little research I found a code coverage utility for Java, called <Cobertura>.
+
+  This plugin creates a simple page with code coverage report for all Java-classes and places it inside the <site> folder, which is where
+
+  all other documentation-files are placed by default. It's easy to create a link to the report from the maven docs. See {{{Documentation}Documentation}} section.
+
+  The configuration is also quite simple, just add the plugin inside a \<reporting\>-tag in your POM.xml
+
+  \
+  <<Apache Maven Javadoc plugin>>
+
+  From the Apache Maven Javadoc Plugin page:
+  <The Javadoc Plugin uses the Javadoc tool to generate javadocs for the specified project.>
+
+  That's basically it.
+
+  Simple configuration - just add the plugin inside the <build>-tag and Maven will generate Javadocs for you.
+
+  It wont generate documentation for private methods by default. In POM.xml, under the declaration of javadoc-plugin, add:
+
+  \<Configuration\>
+
+    \<show\>private\</show\>
+
+  \</Configuration\>
+
+
+* Installation
+
+  Please follow these steps to install the application:
+
+  [[1]] Deploy 'Innlevering3.war' on a Tomcat 8 server and the application should be up and running.
+
+  [[2]] Webapplication will be available at <{{{http://localhost:8080/Innlevering3}http://www.example.com:8080/Innlevering3}}>.
+
+
+* Documentation
+
+  Please see the <Javadoc> for further implementation details:
+
+  * {{{../doc/apidocs/index.html}Javadoc - PrimeChecker}}
+
+  Please see the <Code Coverage Report>, made with Cobertura:
+
+  * {{{../doc/cobertura/index.html}Code Coverage Report}}
+
+
+* Contributers
+
+  Developer:
+
+  * Name: Lars Westbye Dahl
+
+  * E-mail: dahlar14@student.westerdals.no
+
+  * Date: 13/04/2016
+
+  * Web: {{{http://www.larsdahl.no}http://www.larsdahl.no}}
+
+
+* Comments
+
+  Comments on my own work:
+
+  I'm satisfied with the result. I could have prevented the use of scriptlets in <index.jsp>,
+
+  but I approved it since it was only two lines of code.
+
+
+* Questions
+
+  I have no questions at this point.
+
+
+* References
+
+  References used:
+
+  * Christoph Burmeister (2014) "Generating multiple logfiles with log4j2" [Internet]. Available at: {{{http://christoph-burmeister.eu/?p=2631}http://christoph-burmeister.eu/?p=2631}}. [Read 12.04.2016]
+
+  * StackOverflow (2010) "How can I convert a stack trace to a string?" [Internet]. Available at: {{{http://stackoverflow.com/questions/1149703/how-can-i-convert-a-stack-trace-to-a-string}http://stackoverflow.com/questions/1149703/how-can-i-convert-a-stack-trace-to-a-string}}. [Read 11.04.2016]
+

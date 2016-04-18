@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="DEBUG">
+    <Properties>
+        <Property name="log-path">${env:CATALINA_HOME}/logs</Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="requestLog" fileName="${log-path}/primechecker-requests.log"
+                     filePattern="${log-path}/primechecker-request_log-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS} - %c{1}: %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="1 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="4"/>
+        </RollingFile>
+
+        <RollingFile name="errorLog" fileName="${log-path}/primechecker-error.log"
+                     filePattern="${log-path}/primechecker-error_log-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS} - %c{1}: %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="1 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="4"/>
+        </RollingFile>
+
+        <!-- FOR DEBUGGING -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} (%t) %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <!-- FOR DEBUGGING -->
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="com.westerdals.pg4100.servlets.RequestLogger" level="TRACE" additivity="FALSE">
+            <AppenderRef ref="requestLog"/>
+        </Logger>
+        <Logger name="com.westerdals.pg4100.servlets.ErrorLogger" level="ERROR" additivity="FALSE">
+            <AppenderRef ref="errorLog"/>
+        </Logger>
+    </Loggers>
+</Configuration>
