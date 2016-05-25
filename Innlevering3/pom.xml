@@ -7,6 +7,27 @@
   <version>1.0-SNAPSHOT</version>
   <name>Innlevering3 PrimeChecker</name>
   <url>http://maven.apache.org</url>
+  <description>A webservice that let users check if a number is a primenumber or not</description>
+
+  <organization>
+    <name>Lars Dahl</name>
+  </organization>
+
+  <developers>
+    <developer>
+      <name>Lars Dahl</name>
+      <email>dahlar14@student.westerdals.no</email>
+      <url>http://www.larsdahl.no</url>
+      <roles>
+        <role>Architect</role>
+        <role>Developer</role>
+      </roles>
+      <properties>
+        <picUrl>http://www.larsdahl.no/img/lars_profile.jpg</picUrl>
+      </properties>
+    </developer>
+  </developers>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -39,9 +60,47 @@
       <artifactId>log4j-core</artifactId>
       <version>2.5</version>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-  <build>
+
+  <reporting>
     <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <configuration>
+          <show>private</show>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+    </plugins>
+  </reporting>
+
+    <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -53,17 +112,4 @@
     </plugins>
     <finalName>Innlevering3</finalName>
   </build>
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.7</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.7</version>
-      </plugin>
-    </plugins>
-  </reporting>
 </project>

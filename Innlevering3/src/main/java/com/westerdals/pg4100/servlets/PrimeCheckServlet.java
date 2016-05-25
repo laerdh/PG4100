@@ -16,24 +16,32 @@ public class PrimeCheckServlet extends HttpServlet {
     static Logger requestLogger = LogManager.getLogger("com.westerdals.pg4100.servlets.RequestLogger");
     static Logger errorLogger = LogManager.getLogger("com.westerdals.pg4100.servlets.ErrorLogger");
 
+    // Responses to client
+    private static final String IS_PRIME = " is a prime!";
+    private static final String NOT_A_PRIME = " is NOT a prime!";
+    private static final String INVALID_INPUT = "Please provide a valid input. Example: 1337";
+
     /**
      * Takes HTTP POST parameter and returns a new view with result.
      * @param request an HttpServletRequest object that contains the request the client has made of the servlet
      * @param response an HttpServletResponse object that contains the response the servlet sends to the client
-     * @throws ServletException if the request for the POST could not be handled
-     * @throws IOException if an input or output error is detected when the servlet handles the request
      * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest, HttpServletResponse)
      */
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String number = request.getParameter("number");
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String number = request.getParameter("number");
 
-        // Log event
-        requestLogger.trace("A request was sent with number " + number);
+            // Log event
+            requestLogger.trace("A request was sent with number " + number);
 
-        request.setAttribute("result", getResult(number));
+            request.setAttribute("result", getResult(number));
 
-        RequestDispatcher view = request.getRequestDispatcher("index.jsp");
-        view.forward(request, response);
+            RequestDispatcher view = request.getRequestDispatcher("index.jsp");
+            view.forward(request, response);
+        } catch (ServletException | IOException e) {
+            // Log Servlet or IO failures
+            errorLogger.error("An exception were thrown: " + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
+        }
     }
 
     /**
@@ -56,14 +64,14 @@ public class PrimeCheckServlet extends HttpServlet {
         try {
             int n = Integer.parseInt(number);
             if (checkPrime(n)) {
-                result = n + " is a prime!";
+                result = n + IS_PRIME;
             } else {
-                result = n + " is NOT a prime!";
+                result = n + NOT_A_PRIME;
             }
         } catch (NumberFormatException e) {
             // Log error
             errorLogger.error("Exception thrown: " + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
-            result = "Please provide a valid input. Example: 1337";
+            result = INVALID_INPUT;
         }
         return result;
     }

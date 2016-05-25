@@ -81,30 +81,6 @@ Innlevering 3 - PrimeChecker
   [[2]] Webapplication will be available at <{{{http://localhost:8080/Innlevering3}http://www.example.com:8080/Innlevering3}}>.
 
 
-* Documentation
-
-  Please see the <Javadoc> for further implementation details:
-
-  * {{{../doc/apidocs/index.html}Javadoc - PrimeChecker}}
-
-  Please see the <Code Coverage Report>, made with Cobertura:
-
-  * {{{../doc/cobertura/index.html}Code Coverage Report}}
-
-
-* Contributers
-
-  Developer:
-
-  * Name: Lars Westbye Dahl
-
-  * E-mail: dahlar14@student.westerdals.no
-
-  * Date: 13/04/2016
-
-  * Web: {{{http://www.larsdahl.no}http://www.larsdahl.no}}
-
-
 * Comments
 
   Comments on my own work:
