@@ -128,7 +128,6 @@ public class ClientHandler implements Runnable {
                 + getCurrentQuestion().getTitle() + "?";
     }
 
-
     public boolean checkAnswer(String answer) {
         String[] data = getCurrentQuestion().getAuthor().toLowerCase().split(", ");
         String lastname = data[0].trim();
