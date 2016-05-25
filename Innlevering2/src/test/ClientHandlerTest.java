@@ -15,19 +15,23 @@ import java.net.Socket;
 import static org.junit.Assert.*;
 
 public class ClientHandlerTest {
+    private ClientHandler ch;
+
+    @Before
+    public void setUp() {
+        ch = new ClientHandler(null, TestDataProvider.getTestData());
+    }
 
     @Test
     public void testGetRandomQuestion() throws Exception {
-        ClientHandler ch = new ClientHandler(null, TestDataProvider.getTestData());
-        String q1 = ch.getRandomQuestion();
+        String q1 = ch.getQuestion();
 
         assertNotNull(q1);
     }
 
     @Test
     public void testGetRandomQuestionUpdatesCurrentQuestion() throws Exception {
-        ClientHandler ch = new ClientHandler(null, TestDataProvider.getTestData());
-        String actual = ch.getRandomQuestion();
+        String actual = ch.getQuestion();
         String expected = "Hvem har skrevet " + ch.getCurrentQuestion().getTitle() + "?";
 
         assertEquals(expected, actual);
@@ -35,18 +39,16 @@ public class ClientHandlerTest {
 
     @Test
     public void testGetRandomQuestionDoesNotReturnSameQuestionTwice() throws Exception {
-        ClientHandler ch = new ClientHandler(null, TestDataProvider.getTestData());
 
         for (int i = 0; i < 10; i++) {
-            String q1 = ch.getRandomQuestion();
-            String q2 = ch.getRandomQuestion();
+            String q1 = ch.getQuestion();
+            String q2 = ch.getQuestion();
             assertNotEquals("Same question appeared two times in a row", q1, q2);
         }
     }
 
     @Test
     public void testCheckAnswer() throws Exception {
-        ClientHandler ch = new ClientHandler(null, TestDataProvider.getTestData());
         ch.setCurrentQuestion(TestDataProvider.getTestBook());
 
         String answer1 = "Pierre Lemaitre";
@@ -58,7 +60,6 @@ public class ClientHandlerTest {
 
     @Test
     public void testCheckAnswerUppercase() throws Exception {
-        ClientHandler ch = new ClientHandler(null, TestDataProvider.getTestData());
         ch.setCurrentQuestion(TestDataProvider.getTestBook());
 
         String answer1 = "PIERRE LEMAITRE";
@@ -70,7 +71,6 @@ public class ClientHandlerTest {
 
     @Test
     public void testCheckAnswerWithCommaBetweenFirstAndLastname() throws Exception {
-        ClientHandler ch = new ClientHandler(null, TestDataProvider.getTestData());
         ch.setCurrentQuestion(TestDataProvider.getTestBook());
 
         String answer1 = "LEMAITRE, PIERRE";

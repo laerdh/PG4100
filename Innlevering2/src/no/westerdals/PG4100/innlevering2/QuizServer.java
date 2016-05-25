@@ -33,11 +33,10 @@ public class QuizServer {
 
     public void start() {
         try (ServerSocket server = new ServerSocket(SERVER_PORT)){
-            showStatus(Status.SERVER_STARTED);
+            displayMessage("> SERVER STARTED");
             while (server.isBound()) {
                 Socket client = server.accept();
                 clients++;
-                showStatus(Status.CLIENT_CONNECTED);
                 executorService.execute(new ClientHandler(client, quizData));
             }
         } catch (IOException e) {
@@ -63,7 +62,7 @@ public class QuizServer {
     public void stop() {
         try {
             executorService.shutdownNow();
-            showStatus(Status.SERVER_STOPPED);
+            displayMessage("> SERVER STOPPED");
             Thread.sleep(2000);
             System.exit(0);
         } catch (InterruptedException e) {
@@ -79,27 +78,8 @@ public class QuizServer {
         return quizData.size();
     }
 
-    public void showStatus(Status status) {
-        switch (status) {
-            case SERVER_STARTED:
-                started = true;
-                System.out.println("-> SERVER STARTED");
-                break;
-            case SERVER_STOPPED:
-                System.out.println("-> SERVER STOPPED");
-                started = false;
-                break;
-            case CLIENT_CONNECTED:
-                System.out.println("-> CLIENT CONNECTED");
-                break;
-            case CLIENT_DISCONNECTED:
-                System.out.println("-> CLIENT DISCONNECTED");
-                break;
-        }
-    }
-
-    enum Status {
-        SERVER_STARTED, SERVER_STOPPED, CLIENT_CONNECTED, CLIENT_DISCONNECTED
+    public void displayMessage(String message) {
+        System.out.println(message);
     }
 
     public static void main(String[] args) {

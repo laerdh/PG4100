@@ -14,27 +14,37 @@ public class QuizClient {
     private DataInputStream input;
     private boolean connected;
 
-    public QuizClient() {
-        connect();
-    }
 
     public void connect() {
         try (Socket connection = new Socket(SERVER_ADDRESS, SERVER_PORT);
              Scanner in = new Scanner(System.in)){
             connected = true;
+
+            // Setup and run game
             initiateContact(connection);
-            String message;
-            do {
-                displayMessage();
-                message = in.nextLine();
-                send(message);
-            } while(!message.equals("quit"));
+            runGame(in);
+
         } catch (IOException | NoSuchElementException e) {
             System.out.println("Disconnected");
-        } finally {
-            connected = false;
-            disconnect();
         }
+    }
+
+    private void runGame(Scanner in) throws IOException, NoSuchElementException {
+        // Gameloop
+        String message;
+        do {
+            displayMessage();
+            message = in.nextLine();
+            send(message);
+        } while (!shouldQuit(message));
+
+        //Disconnect
+        disconnect();
+    }
+
+    private boolean shouldQuit(String message) {
+        return message.equalsIgnoreCase("n") || message.equalsIgnoreCase("nei")
+                || message.equalsIgnoreCase("no") || message.equalsIgnoreCase("q") || message.equalsIgnoreCase("quit");
     }
 
     private void initiateContact(Socket connection) throws IOException {
@@ -47,26 +57,25 @@ public class QuizClient {
         output.flush();
     }
 
+    public String read() throws IOException {
+        return input.readUTF();
+    }
+
     private void displayMessage() throws IOException {
-        System.out.println(input.readUTF());
+        String message = read();
+        System.out.println(message);
     }
 
     public boolean isConnected() {
         return connected;
     }
 
-    public void disconnect() {
-        try {
-            if (input != null)
-                input.close();
-            if (output != null)
-                output.close();
-            System.out.println("Closing...");
-            Thread.sleep(2000);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.exit(0);
+    public void disconnect() throws IOException {
+        displayMessage();
+        input.close();
+        output.close();
+        connected = false;
+        System.out.println("Closing...");
     }
 
     public static void main(String[] args) {

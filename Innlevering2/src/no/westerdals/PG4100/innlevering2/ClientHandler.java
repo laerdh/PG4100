@@ -6,7 +6,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,8 +18,8 @@ public class ClientHandler implements Runnable {
     private DataOutputStream output;
     private DataInputStream input;
     private List<Book> quizData;
-    private Book current;
-    private boolean clientAnswer = false;
+    private Set<Book> askedQuestions = new HashSet<>();
+    private Book currentQuestion;
 
     public ClientHandler(Socket client, List<Book> quizData) {
         setClientSocket(client);
@@ -32,49 +35,69 @@ public class ClientHandler implements Runnable {
     }
 
     public Book getCurrentQuestion() {
-        return current;
+        return currentQuestion;
     }
 
     public void setCurrentQuestion(Book book) {
-        current = book;
+        currentQuestion = book;
     }
 
     @Override
     public void run() {
         try {
             initiateContact();
-            String message = read();
-            if (!message.equalsIgnoreCase("nei")) {
-                do {
-                    if (clientAnswer) {
-                        String response = checkAnswer(message) ? "Riktig!" : "Feil! Riktig svar er: "
-                                + current.getAuthor();
-                        send(response + "\nVil du fortsette? (j/n)");
-                        clientAnswer = false;
-                    } else {
-                        send(getRandomQuestion());
-                    }
-                    message = read();
-                    if (message.equalsIgnoreCase("j")) {
-                        continue;
-                    }
-                    clientAnswer = true;
-                } while (!message.equalsIgnoreCase("n"));
-                send("Takk for at du deltok!");
-            }
+            disconnect();
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
-        } finally {
-            disconnect();
         }
     }
 
+    private void runGame() throws IOException {
+        String message;
+        String response;
+        do {
+            String question = getQuestion();
+            if (question == null)
+                initiateGame("Alle spørsmålene har blitt stilt. Vil du spille på nytt? (ja/nei)");
+            send(question);
+            message = read();
+
+            response = checkAnswer(message) ? "Riktig!" : "Feil, det er " + currentQuestion.getAuthor();
+            response += "\nVil du fortsette? (j/n)";
+            send(response);
+
+            message = read();
+        } while (shouldContinue(message));
+
+        // End game
+        send("Takk for at du deltok!");
+    }
+
+    private boolean shouldContinue(String message) {
+        return message.equalsIgnoreCase("j") || message.equalsIgnoreCase("ja")
+                || message.equalsIgnoreCase("y") || message.equalsIgnoreCase("yes");
+    }
+
     public void initiateContact() throws IOException {
+        System.out.println("> CLIENT CONNECTED: " + client.getInetAddress());
         output = new DataOutputStream(client.getOutputStream());
         output.flush();
         input = new DataInputStream(client.getInputStream());
-        String message = "Vil du delta i forfatter-QUIZ? (ja/nei)";
+
+        // Confirm start
+        initiateGame("Vil du delta i forfatter-QUIZ? (ja/nei)");
+    }
+
+    private void initiateGame(String message) throws IOException {
         send(message);
+        String answer = read();
+
+        if (shouldContinue(answer)) {
+            askedQuestions.clear();
+            runGame();
+        } else {
+            send("Takk for at du deltok!");
+        }
     }
 
     public void send(String message) throws IOException {
@@ -86,27 +109,25 @@ public class ClientHandler implements Runnable {
         return input.readUTF();
     }
 
-    public void disconnect() {
-        try {
-            System.out.println("-> CLIENT DISCONNECTED");
-            client.close();
-            input.close();
-            output.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void disconnect() throws IOException {
+        System.out.println("> CLIENT DISCONNECTED: " + client.getInetAddress());
+        output.close();
+        input.close();
+        client.close();
     }
 
-    public String getRandomQuestion() {
-        int index = (int) (Math.random() * quizData.size());
-        if (getCurrentQuestion() != null) {
-            do {
-                index = (int) (Math.random() * quizData.size());
-            } while (getCurrentQuestion().equals(quizData.get(index)));
-        }
-        setCurrentQuestion(quizData.get(index));
-        return "Hvem har skrevet " + current.getTitle() + "?";
+    public String getQuestion() throws IOException {
+        Optional<Book> books = quizData.stream()
+                .filter(t -> !askedQuestions.contains(t))
+                .findFirst();
+        Book b = books.orElse(null);
+        setCurrentQuestion(b);
+        askedQuestions.add(b);
+
+        return getCurrentQuestion() == null ? null : "Hvem har skrevet "
+                + getCurrentQuestion().getTitle() + "?";
     }
+
 
     public boolean checkAnswer(String answer) {
         String[] data = getCurrentQuestion().getAuthor().toLowerCase().split(", ");
