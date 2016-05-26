@@ -12,6 +12,7 @@ public class Customer implements Runnable {
     private String name;
     private int sleepTimeHire;
     private int sleepTimeReturn;
+    private boolean stop = false;
 
     public Customer(String name, CountDownLatch countDownLatch) {
         setName(name);
@@ -36,10 +37,14 @@ public class Customer implements Runnable {
         return name;
     }
 
+    public void stop() { stop = true; }
+
+    public boolean isRunning() { return !stop; }
+
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!stop) {
                 countDownLatch.await();
                 // Default: 1-10 seconds before customer rent a car.
                 Thread.sleep((int) (Math.random() * (sleepTimeHire - 1000) + 1000));

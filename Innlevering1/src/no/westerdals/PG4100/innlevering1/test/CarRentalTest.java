@@ -7,12 +7,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.concurrent.CountDownLatch;
+
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 public class CarRentalTest {
@@ -38,13 +39,14 @@ public class CarRentalTest {
     public void testCustomerCanRentACar() throws Exception {
         // ARRANGE
         CarRental carRental = new CarRental();
-        Customer customer = new Customer("Tester", null);
+        CarRental carRentalSpy = spy(carRental);
+        Customer customer = new Customer("Tester", new CountDownLatch(0));
 
         // ACT
-        boolean car = carRental.rentACar(customer);
+        carRentalSpy.rentACar(customer);
 
-        // ASSERT
-        assertTrue("Customer should have been able to rent a car", car);
+        // ASSERT & VERIFY
+        verify(carRentalSpy).rentACar(customer);
     }
 
     @Test
