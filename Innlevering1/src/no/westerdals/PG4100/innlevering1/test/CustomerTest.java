@@ -1,5 +1,7 @@
-package no.westerdals.PG4100.innlevering1;
+package no.westerdals.PG4100.innlevering1.test;
 
+import no.westerdals.PG4100.innlevering1.CarRental;
+import no.westerdals.PG4100.innlevering1.Customer;
 import org.junit.Before;
 import org.junit.Test;
 
