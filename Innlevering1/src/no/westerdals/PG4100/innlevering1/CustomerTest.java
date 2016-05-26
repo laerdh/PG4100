@@ -1,6 +1,5 @@
 package no.westerdals.PG4100.innlevering1;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,21 +8,16 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 public class CustomerTest {
+    private CarRental carRental;
 
     @Before
     public void setUp() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
+        carRental = new CarRental();
     }
 
     @Test
     public void testCheckCustomerThreadIsRunning() throws Exception {
         // ARRANGE
-        CarRental carRental = new CarRental();
         Customer customer = new Customer("Tester", new CountDownLatch(0));
         customer.setCarRental(carRental);
 
@@ -39,7 +33,6 @@ public class CustomerTest {
     @Test
     public void testStopCustomerThread() throws Exception {
         // ARRANGE
-        CarRental carRental = new CarRental();
         Customer customer = new Customer("Tester", new CountDownLatch(0));
 
         // ACT & ASSERT
@@ -55,7 +48,6 @@ public class CustomerTest {
     @Test
     public void testCustomerRentCar() throws Exception {
         // ARRANGE
-        CarRental carRental = new CarRental();
         CarRental carRentalSpy = spy(carRental);
         Customer customer = new Customer("Tester", null);
 
@@ -72,7 +64,6 @@ public class CustomerTest {
     @Test
     public void testCustomerReturnCar() throws Exception {
         // ARRANGE
-        CarRental carRental = new CarRental();
         CarRental carRentalSpy = spy(carRental);
         Customer customer = new Customer("Tester", null);
 

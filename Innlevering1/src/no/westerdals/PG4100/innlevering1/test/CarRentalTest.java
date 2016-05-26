@@ -3,8 +3,6 @@ package no.westerdals.PG4100.innlevering1.test;
 import no.westerdals.PG4100.innlevering1.Car;
 import no.westerdals.PG4100.innlevering1.CarRental;
 import no.westerdals.PG4100.innlevering1.Customer;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -12,20 +10,10 @@ import java.util.concurrent.CountDownLatch;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 
 public class CarRentalTest {
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-    }
 
     @Test
     public void testFindAvailableCar() {
