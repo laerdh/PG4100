@@ -9,29 +9,23 @@ import java.util.concurrent.Executors;
 
 public class CarRentalApplication {
     private static final int CUSTOMERS = 10;
-
+    private static CountDownLatch countDownLatch = new CountDownLatch(CUSTOMERS / 2);
     private static CarRentalService carRental = new CarRental();
     private static ArrayList<String> names = new ArrayList<>();
 
     public static void main(String[] args) {
-        for (int i = 1; i <= CUSTOMERS; i++) {
+        ExecutorService executor = Executors.newFixedThreadPool(CUSTOMERS);
+        for (int i = 0; i < CUSTOMERS; i++) {
             String name = JOptionPane.showInputDialog("Skriv inn kundenavn", null);
             names.add(name);
 
-            if (i == CUSTOMERS / 2)
-                startThreadPool(0, (CUSTOMERS / 2));
-        }
-        // Start the rest of customer threads
-        startThreadPool((CUSTOMERS / 2), CUSTOMERS);
-    }
-
-    public static void startThreadPool(int start, int end) {
-        ExecutorService executor = Executors.newFixedThreadPool(end - start);
-        for (int i = start; i < end; i++) {
-            Customer customer = new Customer(names.get(i));
+            countDownLatch.countDown();
+            Customer customer = new Customer(names.get(i), countDownLatch);
             customer.setCarRental(carRental);
             executor.execute(customer);
         }
+
+        // Shutdown when finished
         executor.shutdown();
     }
 }

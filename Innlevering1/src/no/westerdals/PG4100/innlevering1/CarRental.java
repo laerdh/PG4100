@@ -2,6 +2,7 @@ package no.westerdals.PG4100.innlevering1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -81,13 +82,12 @@ public class CarRental implements CarRentalService {
     }
 
     public Car findAvailableCar() {
-        for (Car car : cars) {
-            if (car.isAvailable()) {
-                car.setAvailable(false);
-                return car;
-            }
-        }
-        return null;
+        Optional<Car> car = cars.stream()
+                .filter(Car::isAvailable)
+                .findFirst();
+        Car c = car.get();
+        c.setAvailable(false);
+        return c;
     }
 
     public int carsAvailable() {
@@ -101,13 +101,11 @@ public class CarRental implements CarRentalService {
     }
 
     private Customer getCustomerByCar(Car car) {
-        for (Customer customer : reservations.keySet()) {
-            Car c = reservations.get(customer);
-            if (c.equals(car)) {
-                return customer;
-            }
-        }
-        return null;
+        Optional<Customer> customer = reservations.keySet()
+                .stream()
+                .filter(c -> reservations.get(c).equals(car))
+                .findFirst();
+        return customer.orElse(null);
     }
 
     private void printReservation(String name, String car) {

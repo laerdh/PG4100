@@ -36,7 +36,7 @@ public class CarRentalTest {
     public void testCustomerCanRentACar() throws Exception {
         // ARRANGE
         CarRental carRental = new CarRental();
-        Customer customer = new Customer("Tester");
+        Customer customer = new Customer("Tester", null);
 
         // ACT
         boolean car = carRental.rentACar(customer);
@@ -49,8 +49,8 @@ public class CarRentalTest {
     public void testRentCarButNoCarAvailable() throws Exception {
         // ARRANGE
         CarRental carRental = new CarRental(1);
-        Customer customer1 = new Customer("Tester 1");
-        Customer customer2 = new Customer("Tester 2");
+        Customer customer1 = new Customer("Tester 1", null);
+        Customer customer2 = new Customer("Tester 2", null);
 
         // ACT
         carRental.rentACar(customer1);
@@ -63,7 +63,7 @@ public class CarRentalTest {
     public void testCarsAvailableIncreasedByOneWhenCustomerReturnsACar() throws Exception {
         // ARRANGE
         CarRental carRental = new CarRental(2);
-        Customer customer = new Customer("Tester");
+        Customer customer = new Customer("Tester", null);
 
         // ACT
         carRental.rentACar(customer);
