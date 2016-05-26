@@ -11,6 +11,8 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class CarRentalTest {
@@ -29,7 +31,7 @@ public class CarRentalTest {
         CarRental carRental = new CarRental();
         Car car = carRental.findAvailableCar();
 
-        assertNotNull(car);
+        assertNotNull("A car should have been returned", car);
     }
 
     @Test
@@ -42,21 +44,30 @@ public class CarRentalTest {
         boolean car = carRental.rentACar(customer);
 
         // ASSERT
-        assertTrue(car);
+        assertTrue("Customer should have been able to rent a car", car);
     }
 
     @Test
     public void testRentCarButNoCarAvailable() throws Exception {
         // ARRANGE
-        CarRental carRental = new CarRental(1);
-        Customer customer1 = new Customer("Tester 1", null);
-        Customer customer2 = new Customer("Tester 2", null);
+        CarRental carRental = mock(CarRental.class);
+        when(carRental.carsAvailable()).thenReturn(0);
+
+        Customer customer = new Customer("Tester", null);
 
         // ACT
-        carRental.rentACar(customer1);
+        boolean actual = carRental.rentACar(customer);
 
         // ASSERT
-        assertFalse(carRental.rentACar(customer2));
+        assertFalse(actual);
+    }
+
+    @Test
+    public void testCarsAvailable() throws Exception {
+        // ARRANGE
+        CarRental carRental = new CarRental(5);
+
+        assertEquals("Number of cars available don't match", 5, carRental.carsAvailable());
     }
 
     @Test
@@ -70,9 +81,10 @@ public class CarRentalTest {
 
         // ASSERT
         assertEquals(1, carRental.carsAvailable());
+
         // This act should increment cars available by one
         carRental.returnACar(customer);
-        assertEquals(2, carRental.carsAvailable());
+        assertEquals("Number of available cars didn't increase after customer returned a car", 2, carRental.carsAvailable());
     }
 
     @Test

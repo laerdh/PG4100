@@ -11,6 +11,7 @@ public class CarRental implements CarRentalService {
     private static final String REGISTRATION_PREFIX = "RF";
     private static final int DEFAULT_CAR_POOL = 5;
     private int numberOfCars;
+
     private ReentrantLock lock = new ReentrantLock();
     private Condition newCondition = lock.newCondition();
 
@@ -85,8 +86,8 @@ public class CarRental implements CarRentalService {
         Optional<Car> car = cars.stream()
                 .filter(Car::isAvailable)
                 .findFirst();
-        Car c = car.get();
-        c.setAvailable(false);
+        Car c = car.orElse(null);
+        if (c != null) c.setAvailable(false);
         return c;
     }
 
@@ -128,6 +129,4 @@ public class CarRental implements CarRentalService {
         }
         System.out.printf("\n%s\n\n", "*********** Status slutt ***********");
     }
-
-
 }

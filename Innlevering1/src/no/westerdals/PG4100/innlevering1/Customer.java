@@ -44,11 +44,10 @@ public class Customer implements Runnable {
                 // Default: 1-10 seconds before customer rent a car.
                 Thread.sleep((int) (Math.random() * (sleepTimeHire - 1000) + 1000));
 
-                if (carRental.rentACar(this)) {
-                    // Default: 1-3 seconds before customer returns car.
-                    Thread.sleep((int) (Math.random() * (sleepTimeReturn - 1000) + 1000));
-                    carRental.returnACar(this);
-                }
+                carRental.rentACar(this);
+                // Default: 1-3 seconds before customer returns car.
+                Thread.sleep((int) (Math.random() * (sleepTimeReturn - 1000) + 1000));
+                carRental.returnACar(this);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
